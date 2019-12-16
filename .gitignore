@@ -1,0 +1,7 @@
+.terraform
+Gemfile.lock
+terraform.tfstate
+terraform.tfstate.*
+.kitchen
+test/fixtures/tf_module/.terraform
+test/fixtures/tf_module/terraform.*

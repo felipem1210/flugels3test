@@ -1,5 +1,5 @@
 module "networking" {   
-  source = "github.com/felipem1210/networking.git"   
+  source = "./modules/networking"   
   azs_list = ["us-west-2a"]   
   cidr_block = "192.168.0.0/16"
   newbits = 4   

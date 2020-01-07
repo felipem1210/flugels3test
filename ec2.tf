@@ -18,21 +18,36 @@ resource "aws_key_pair" "ec2" {
 }
 
 module "iam-role" {
-  source        = "github.com/felipem1210/tf-aws-iam-role-common.git"
+  source        = "./modules/tf-aws-iam-role-common"
   iam_role_name = "s3-files-download"
 }
 
 resource "aws_iam_instance_profile" "myprofile" {
-    name = "ec2_profile"
+  name = "ec2_profile"
   role = module.iam-role.role_name
 }
 
+data "aws_ami" "ec2-ami" {
+  most_recent      = true
+  owners           = ["self"]
+  
+  filter {
+    name   = "state"
+    values = ["available"]
+  }
+
+  filter {
+    name   = "tag:Name"
+    values = ["felipem-*"]
+  }
+}
+
 module "ec2-linux" {
-  source = "github.com/felipem1210/terraform-aws-ec2-instance.git"
+  source = "./modules/terraform-aws-ec2-instance"
   #source = "./ec2-no-elb"
   name                   = "ec2-test"
   associate_public_ip_address = true
-  ami                    = "ami-038a2f73ad495e99e"
+  ami                    = data.aws_ami.ec2-ami.id
   instance_type          = "t2.micro"
   key_name               = "deployer-key"
   iam_instance_profile   = aws_iam_instance_profile.myprofile.name

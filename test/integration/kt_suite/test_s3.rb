@@ -3,15 +3,12 @@ require 'awspec'
 
 describe s3_bucket('flugel-bucket-test'.to_s) do
     it { should exist }
+    it { should have_object('test1') }
+    it { should have_object('test2') }
  #   it { should_not be_public }
 end
 
-describe s3_bucket(bucket_name: 'flugel-bucket-test', key: 'test1') do
-    it { should exist }
-  #  it { should_not be_public }
+describe ec2('flugel') do
+  it { should exist }
 end
 
-describe s3_bucket(bucket_name: 'flugel-bucket-test', key: 'test2') do
-    it { should exist }
-  #  it { should_not be_public }
-end

@@ -116,5 +116,7 @@ Terraform code was added to set up an ec2 instance that downloads the files in t
 ```
 3. Apply the other resources and modules of terraform code to deploy the ec2 instance and networking.
 ```sh
-    bundle exec kitchen test
+    bundle exec kitchen converge
+    bundle exec kitchen verify
+    bundle exec kitchen destroy
 ```

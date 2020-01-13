@@ -6,14 +6,12 @@ driver:
 provisioner:
   name: terraform
 
-verifier:
-  name: awspec
-
 platforms:
   - name: aws
 
 suites:
-  - name: "kt_suite"
+  - name: "awspec"
     verifier:
+      name: awspec
       patterns:
         - "test/integration/kt_suite/test_s3.rb"

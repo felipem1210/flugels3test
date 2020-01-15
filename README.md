@@ -89,17 +89,9 @@ require 'awspec'
 
 describe s3_bucket('flugel-bucket-test'.to_s) do
     it { should exist }
+    it { should have_object('test1') }
+    it { should have_object('test2') }
  #   it { should_not be_public }
-end
-
-describe s3_bucket_object(bucket_name: 'flugel-bucket-test', key: 'test1') do
-    it { should exist }
-  #  it { should_not be_public }
-end
-
-describe s3_bucket_object(bucket_name: 'flugel-bucket-test', key: 'test2') do
-    it { should exist }
-  #  it { should_not be_public }
 end
 ```
 
@@ -110,12 +102,21 @@ Once all this is configured, the terraform code will be planned, applyed, verfye
     bundle exec kitchen test
 ```
 
-**Note:** being honest there is an error running the ruby tests, because in Chef Inspec documentation there are resources called aws_s3_bucket and aws_s3_bucket_object, but when I use that resources I get error of this type:
-```sh
-  NoMethodError:
-  undefined method `s3_bucket_object' for main:Object
-  Did you mean?  s3_bucket
-  # ./test/integration/kt_suite/test_s3.rb:9:in `<top (required)>'
+## Second part of test
 
+Terraform code was added to set up an ec2 instance that downloads the files in the s3 bucket and publish the files in a nginx web server. Also an AMI of this instance was created using Packer. The steps to reproduce are:
+
+1. Create the s3 bucket and bucket objects
+```sh
+  terraform apply --target=aws_s3_bucket.test --target=aws_s3_bucket_object.file1 --target=aws_s3_bucket_object.file2 
 ```
-So, I deliver the code with one test working because I used the suggestion made in the error.
+2. Build the AMI image using packer, the template is the file packer.json
+```sh
+  packer build -var 'aws_access_key=YOUR_AWS_ACCESS_KEY' -var 'aws_secret_key=YOUR_AWS_SECRET_KEY' packer.json
+```
+3. Apply the other resources and modules of terraform code to deploy the ec2 instance and networking.
+```sh
+    bundle exec kitchen converge
+    bundle exec kitchen verify
+    bundle exec kitchen destroy
+```

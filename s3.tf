@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-west-1"
+  region = "us-west-2"
   version = "2.30"
 }
 
@@ -9,8 +9,8 @@ terraform {
 
 resource "aws_s3_bucket" "test" {
   bucket = "flugel-bucket-test"
-  region = "us-west-1"
-  acl    = "private"
+  region = "us-west-2"
+  acl    = "public-read"
   force_destroy = "true"
 
   tags = {
@@ -22,14 +22,14 @@ resource "aws_s3_bucket" "test" {
 resource "aws_s3_bucket_object" "file1" {
   bucket = aws_s3_bucket.test.id
   key    = "test1"
-  #source = "test1.txt"
+  acl    = "public-read"
   content = timestamp()
 }
 
 resource "aws_s3_bucket_object" "file2" {
+  acl    = "public-read"
   bucket = aws_s3_bucket.test.id
   key    = "test2"
-  #source = "test2.txt"
   content = timestamp()
 }
 

@@ -1,0 +1,26 @@
+{
+    "variables": {
+      "aws_access_key": "",
+      "aws_secret_key": ""
+    },
+    "builders": [{
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "us-west-2",
+      "source_ami": "ami-0c5204531f799e0c6",
+      "instance_type": "t2.micro",
+      "ssh_username": "ec2-user",
+      "ami_name": "felipem-ami",
+      "tags": {
+        "Name": "felipem-ami"
+      }
+    }],
+    "provisioners": [
+        {
+          "type": "shell",
+          "script": "s3_download.sh"
+        }
+      ]
+  }
+  
